@@ -4,19 +4,19 @@ import bcrypt from "bcryptjs"
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, "Name is required"]
+        required: [true, "Vui lòng nhập họ tên"]
     },
     email: {
         type: String,
-        required: [true, "Email is required"],
+        required: [true, "Vui lòng nhập email"],
         unique: true,
         lowercase: true,
         trim: true
     },
     password: {
         type: String,
-        required: [true, "Password is required"],
-        minlength: [6, "Password must be at least 6 characters long"]
+        required: [true, "Vui lòng nhập mật khẩu"],
+        minlength: [6, "Mật khẩu phải dài ít nhất 6 ký tự"]
     },
 
     cartItem: [

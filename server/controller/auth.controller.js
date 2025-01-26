@@ -50,7 +50,7 @@ export const dangKy = async (req, res) => {
         message: "Success"
     })
     } catch (error) {
-        res.status(500).json({ message: "Lỗi đăng ký controller", error: error.message })
+        res.status(500).json({ message: error.message })
     }
 }
 export const dangNhap = async (req, res) => {
