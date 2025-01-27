@@ -1,8 +1,8 @@
-import { ArrowRight, Loader, Lock, Mail, User, UserPlus } from 'lucide-react'
+import { ArrowRight, Eye, EyeOff, Loader, Lock, Mail, User, UserPlus } from 'lucide-react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const FormDangKy = ({ formData, setFormData, handleSubmit, loading }) => {
+const FormDangKy = ({ formData, setFormData, handleSubmit, loading, showPassword, setShowPassword }) => {
   return (
     <div className="bg-gray-800 py-8 px-4 shadow sm:rounded-lg sm:px-10">
         <form onSubmit={handleSubmit} className='space-y-6'>
@@ -56,13 +56,20 @@ const FormDangKy = ({ formData, setFormData, handleSubmit, loading }) => {
                 </div>
                 <input 
                     id='password' 
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     className='block w-full px-3 py-2 pl-10 bg-gray-700 border border-gray-600 rounded-md shadow-sm placeholder-gray-400
                     focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm'
                     placeholder="********" />
+                    <button type='button' className='absolute inset-y-0 right-0 pr-3 flex items-center' onClick={() => setShowPassword(!showPassword)}>
+                  {showPassword ? (
+                    <EyeOff className='size-5 text-base-content/40' />
+                  ): (
+                    <Eye className='size-5 text-base-content/40' />
+                  )}
+                </button>
                 </div>
             </div>
 

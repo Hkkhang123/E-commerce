@@ -10,7 +10,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Vui lòng nhập email"],
         unique: true,
-        lowercase: true,
         trim: true
     },
     password: {

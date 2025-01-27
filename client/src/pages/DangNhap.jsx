@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
 import FormDangNhap from '../components/FormDangNhap'
 import { motion } from 'framer-motion'
+import { useUserStore } from '../stores/useUserStore'
 const DangNhap = () => {
   const [ email, setEmail ] = useState("")
   const [ password, setPassword ] = useState("")
-  const loading = false
+  const [showPassword, setShowPassword] = useState(false);
+
+  const { login, loading }  = useUserStore()
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(email, password)
+    login(email, password)
 }
   return (
     <div className='flex flex-col items-center justify-center py-12 sm:px-6 lg:px-8'>
@@ -27,7 +30,7 @@ const DangNhap = () => {
         transition={{ duration: 0.8, delay: 0.2 }}
       >
       
-        <FormDangNhap email={email} setEmail={setEmail} password={password} setPassword={setPassword} handleSubmit={handleSubmit} loading={loading} />
+        <FormDangNhap email={email} setEmail={setEmail} password={password} setPassword={setPassword} handleSubmit={handleSubmit} loading={loading} showPassword={showPassword} setShowPassword={setShowPassword} />
       </motion.div>
     </div>
   )

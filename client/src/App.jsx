@@ -4,11 +4,13 @@ import DangKy from "./pages/DangKy"
 import DangNhap from "./pages/DangNhap"
 import Navbar from "./components/Navbar"
 import { Toaster } from "react-hot-toast"
+import { useUserStore } from "./stores/useUserStore"
 
 function App() {
+  const { user } = useUserStore()
   return (
     <div className="min-h-screen bg-gray-900 text-white relative overflow-hidden">
-      {/* CHuyển màu nền */}
+
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute inset-0">
           <div className='absolute top-0 left-1/2 -translate-x-1/2 w-full h-full 
@@ -22,7 +24,7 @@ function App() {
         <Routes>
         <Route path="/" element={<TrangChu />} />
         <Route path="/dangky" element={<DangKy />} />
-        <Route path="/dangnhap" element={<DangNhap />} />
+        <Route path="/dangnhap" element={user ? <TrangChu /> : <DangNhap />} />
         </Routes>
       </div>
       <Toaster />

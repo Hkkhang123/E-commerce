@@ -9,6 +9,7 @@ const DangKy = () => {
     password: "",
     confirmPassword: ""
   })
+  const [ showPassword, setShowPassword ] = useState(false);
 
   const { signup, loading } = useUserStore()
 
@@ -33,7 +34,7 @@ const DangKy = () => {
         transition={{ duration: 0.8, delay: 0.2 }}
       >
       
-        <FormDangKy formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} loading={loading} />
+        <FormDangKy formData={formData} setFormData={setFormData} handleSubmit={handleSubmit} loading={loading} showPassword={showPassword} setShowPassword={setShowPassword} />
       </motion.div>
     </div>
   )

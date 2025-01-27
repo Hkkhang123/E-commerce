@@ -1,6 +1,7 @@
-import User from "../model/user.model.js"
+
 import jwt from "jsonwebtoken"
 import { client } from "../lib/redis.js"
+import User from "../model/user.model.js"
 const generateToken = (userId) => {
     const accessToken = jwt.sign({ userId }, process.env.ACCESS_JWT_SECRET, {
         expiresIn: "15m",
@@ -66,10 +67,14 @@ export const dangNhap = async (req, res) => {
                 message: "Success"
             })
         } else {
-            res.status(401).json ({message: "Invalid email or Password"})
+            if (!user) {
+                res.status(400).json ({message: "Email không tồn tại"})
+            } else {
+                res.status(400).json ({message: "Mật khẩu không chính xác"})
+            }
         }
     } catch (error) {
-        res.status(500).json({ message: "Lỗi đăng nhập controller", error: error.message })
+        res.status(500).json({ message: "Lỗi đăng nhập controller", message: error.message })
     }
 }
 export const dangXuat = async (req, res) => {
