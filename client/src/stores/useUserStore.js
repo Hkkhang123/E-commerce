@@ -46,5 +46,15 @@ export const useUserStore = create((set, get) => ({
 		} catch (error) {
 			toast.error(error.response.data.message || "Lỗi đăng xuất tài khoản, vui lòng thử lại sau");
 		}
+	},
+
+	checkAuth: async () => {
+		set({ checkingAuth: true });
+		try {
+			const res = await axios.get("/auth/profile");
+			set ({user: res.data, checkingAuth: false});
+		} catch (error) {
+			set({ checkingAuth: false, user: null });
+		}
 	}
 }))
