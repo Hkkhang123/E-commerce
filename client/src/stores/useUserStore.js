@@ -2,7 +2,7 @@ import {create} from "zustand"
 import axios from "../lib/axios"
 import {toast} from "react-hot-toast"
 
-export const useUserStore = create((set, get) => ({
+export const useUserStore = create((set) => ({
     user: null,
     loading: false,
     checkingAuth: true,
@@ -55,6 +55,7 @@ export const useUserStore = create((set, get) => ({
 			set ({user: res.data, checkingAuth: false});
 		} catch (error) {
 			set({ checkingAuth: false, user: null });
+			throw error
 		}
 	}
 }))

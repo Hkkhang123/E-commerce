@@ -64,8 +64,11 @@ export const dangNhap = async (req, res) => {
             setCookies(res, accessToken, refreshToken)
 
             res.json({
-                message: "Success"
-            })
+				_id: user._id,
+				name: user.name,
+				email: user.email,
+				role: user.role,
+			});
         } else {
             if (!user) {
                 res.status(400).json ({message: "Email không tồn tại"})

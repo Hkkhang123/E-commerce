@@ -68,12 +68,14 @@ export const deleteProducts = async (req, res) => {
             const publicId = product.image.split("/").pop().split(".")[0]
             try {
                 await cloudinary.uploader.destroy(`products/${publicId}`)
-                console.log("Done!")
             } catch (error) {
                 res.status(500).json({ message: "Lỗi xóa ảnh: ", error: error.message })
             }
         }
+
         await Product.findByIdAndDelete(req.params.id)
+
+        res.json({ message: "Product deleted successfully" })
     } catch (error) {
         res.status(500).json({ message: "Lỗi deleteProduct controller: ", error: error.message })
     }
@@ -104,8 +106,8 @@ export const getRecommendProducts = async (req, res) => {
 export const getProductByCat = async (req, res) => {
     const {category} = req.params
     try {
-        const product = await Product.find({category})
-        res.json(product)
+        const products = await Product.find({ category })
+        res.json({products})
     } catch (error) {
         res.status(500).json({ message: "Lỗi getProductbyCat controller: ", error: error.message })
     }

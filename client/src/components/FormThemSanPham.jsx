@@ -4,11 +4,11 @@ import { Loader, PlusCircle, Upload } from 'lucide-react'
 import { useProductStore } from '../stores/useProductStore'
 
 const categories = [
-    "Jeans", "Tshirts", "Giày", "Kính mát", "Jackets", "Suits", "Balo"
+    "Jeans", "Tshirts", "Giày", "Kính-mát", "Jackets", "Suits", "Balo"
 ]
 const FormThemSanPham = () => {
     const [image, setImage] = useState("")
-    const {createProducts, loading} = useProductStore()
+    const {createProduct, loading} = useProductStore()
     const [newProducts, setNewProducts] = useState({
         name: "",
         description: "",
@@ -18,7 +18,7 @@ const FormThemSanPham = () => {
     })
 const handleSubmit = async (e) => {
     e.preventDefault()
-    await createProducts(newProducts)
+    await createProduct(newProducts)
 }
 
 const handleImage = (e) => {

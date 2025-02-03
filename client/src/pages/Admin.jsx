@@ -1,16 +1,24 @@
 import { BarChart, PlusCircle, ShoppingBag, ShoppingBasket } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import FormThemSanPham from '../components/FormThemSanPham'
 import DSSanPham from '../components/DSSanPham'
 import ThongKe from '../components/ThongKe'
+import { useProductStore } from '../stores/useProductStore'
+
+const tabs = [
+    {id: "create", label: "Thêm sản phẩm", icon: PlusCircle},
+    {id: "products", label: "Sản phẩm", icon: ShoppingBasket},
+    {id: "analytics", label: "Thống kê", icon: BarChart},
+]
 const Admin = () => {
-    const tabs = [
-        {id: "create", label: "Thêm sản phẩm", icon: PlusCircle},
-        {id: "products", label: "Sản phẩm", icon: ShoppingBasket},
-        {id: "analytics", label: "Thống kê", icon: BarChart},
-    ]
+    
     const [activeTab, setActiveTab] = useState("create");
+    const {fetchAllProducts} = useProductStore()
+
+    useEffect(() => {
+        fetchAllProducts()
+    },[fetchAllProducts])
   return (
     <div className="min-h-screen text-white relative overflow-hidden">
         <div className="relative z-10 container mx-auto px-4 py-16">
