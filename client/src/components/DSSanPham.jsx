@@ -68,7 +68,7 @@ const ProductsList = () => {
 								</div>
 							</td>
 							<td className='px-6 py-4 whitespace-nowrap'>
-								<div className='text-sm text-gray-300'>{product.price.toFixed(3)} VNĐ</div>
+								<div className='text-sm text-gray-300'>{new Intl.NumberFormat('vi-VN').format(product.price)} VNĐ</div>
 							</td>
 							<td className='px-6 py-4 whitespace-nowrap'>
 								<div className='text-sm text-gray-300'>{product.category}</div>

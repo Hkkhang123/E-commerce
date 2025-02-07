@@ -41,20 +41,21 @@ export const getDailySaleData = async (startDate, endDate) => {
     const dailySaleData = await Order.aggregate([
         {
             $match: {
-                createdAt: { $gte: startDate, $lte: endDate }
-            }
+                createdAt: {
+                    $gte: startDate,
+                    $lte: endDate,
+                },
+            },
         },
         {
             $group: {
-                _id: { $dateToString: { format: "%d-%m-%Y", date: "$createdAt" } },
+                _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
                 sales: { $sum: 1 },
-                revenue: { $sum: "$totalAmount" }
-            }
+                revenue: { $sum: "$totalAmount" },
+            },
         },
-        {
-            $sort: { _id: 1 }
-        }
-    ])
+        { $sort: { _id: 1 } },
+    ]);
 
     const dateArray = getDateInRange(startDate, endDate)
 
@@ -63,8 +64,8 @@ export const getDailySaleData = async (startDate, endDate) => {
 
         return {
             date, 
-            sale: foundData?.Sales || 0,
-            revenue: foundData?.Revenue || 0
+            sales: foundData?.sales || 0,
+            revenue: foundData?.revenue || 0
         }
     })
 }

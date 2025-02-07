@@ -64,10 +64,10 @@ export const dangNhap = async (req, res) => {
             setCookies(res, accessToken, refreshToken)
 
             res.json({
-				_id: user._id,
-				name: user.name,
-				email: user.email,
+                id: user._id,
+                name: user.name,
 				role: user.role,
+                cartItem: user.cartItem,
 			});
         } else {
             if (!user) {

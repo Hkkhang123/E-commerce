@@ -29,7 +29,7 @@ const ProductCard = ({ product }) => {
 
             <div className="mt-2 mb-5 flex items-center justify-between">
                 <p>
-                    <span className="text-3xl font-bold text-emerald-400">{product.price.toFixed(3)} VNĐ</span>
+                    <span className="text-3xl font-bold text-emerald-400">{new Intl.NumberFormat('vi-VN').format(product.price)} VNĐ</span>
                 </p>
             </div>
 

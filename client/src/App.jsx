@@ -11,6 +11,8 @@ import Admin from "./pages/Admin"
 import Category from "./pages/Category"
 import GioHang from "./pages/GioHang"
 import { useCartStore } from "./stores/useCartStore"
+import PurchaseSuccess from "./pages/PurchaseSuccess"
+import PurchaseCancelled from "./pages/PurchaseCancelled"
 
 function App() {
   const { user, checkAuth, checkingAuth } = useUserStore()
@@ -20,8 +22,10 @@ function App() {
   },[checkAuth])
 
   useEffect(() => {
+    if(!user) return 
+    
     getCartItem()
-  },[getCartItem])
+  },[getCartItem, user])
 
   if(checkingAuth) return <LoadingSpinner />
   return (
@@ -44,6 +48,8 @@ function App() {
         <Route path="/admin-dashboard" element={user?.role === "admin" ? <Admin /> : <Navigate to='/' />} />
         <Route path="/category/:category" element={<Category />} />
         <Route path="/giohang" element={user ? <GioHang /> : <Navigate to='/dangnhap' />} />
+        <Route path="/purchase-success" element={user ? <PurchaseSuccess /> : <Navigate to='/dangnhap' />} />
+        <Route path="/purchase-cancelled" element={user ? <PurchaseCancelled /> : <Navigate to='/dangnhap' />} />
         </Routes>
       </div>
       <Toaster />

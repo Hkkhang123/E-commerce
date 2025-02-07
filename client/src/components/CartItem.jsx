@@ -18,7 +18,7 @@ const CartItem = ({product}) => {
                         className='inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-md border
                              border-gray-600 bg-gray-700 font-medium text-gray-400 hover:bg-gray-600
                              focus:outline-none focus:ring-2 focus:ring-emerald-500'
-                        onClick={() => updateQuantity(product.id, product.quantity - 1)}
+                        onClick={() => updateQuantity(product._id, product.quantity - 1)}
                     >
                         <Minus className='text-gray-300' />
                     </button>
@@ -28,12 +28,12 @@ const CartItem = ({product}) => {
                                  border-gray-600 bg-gray-700 font-medium text-gray-400 hover:bg-gray-600
                                     focus:outline-none focus:ring-2 focus:ring-emerald-500'
                     >
-                        <Plus className='text-gray-300' onClick={() => updateQuantity(product.id, product.quantity + 1) } />
+                        <Plus className='text-gray-300' onClick={() => updateQuantity(product._id, product.quantity + 1) } />
                     </button>
                 </div>
 
                 <div className="text-end md:order-4 md:w-32">
-                    <p className="text-base font-bold text-emerald-400">{product.price.toFixed(3)} VNĐ</p>
+                    <p className="text-base font-bold text-emerald-400">{new Intl.NumberFormat('vi-VN').format(product.price)} VNĐ</p>
                 </div>
             </div>
 

@@ -3,15 +3,15 @@ import Coupon from "../model/coupons.model.js"
 import Order from "../model/order.model.js"
 export const createCheckoutSession = async (req, res) => {
     try {
-        const {product, couponCode} = req.body
+        const {products, couponCode} = req.body
 
-        if (!Array.isArray(product) || product.length === 0) {
+        if (!Array.isArray(products) || products.length === 0) {
             return res.status(400).json({ message: "Invalid or empty array" })
         }
 
         let totalAmount = 0
 
-        const lineItem = product.map(product => {
+        const lineItem = products.map((product) => {
             const amount = Math.round(product.price)
             totalAmount += amount * product.quantity
             return {
@@ -22,7 +22,8 @@ export const createCheckoutSession = async (req, res) => {
                         images: [product.image],
                     },
                     unit_amount: amount,
-                }
+                },
+                quantity: product.quantity || 1
             }
         })
 
@@ -31,7 +32,7 @@ export const createCheckoutSession = async (req, res) => {
         if (couponCode) {
             coupon = await Coupon.findOne({ code: couponCode, userId: req.user._id, isActive: true })
             if (coupon) {
-                totalAmount -= Math.round(totalAmount * coupon.discountPercentage / 100)
+                totalAmount -= Math.round((totalAmount * coupon.discountPercentage) / 100)
             }
         }
 
@@ -43,10 +44,11 @@ export const createCheckoutSession = async (req, res) => {
             cancel_url: `${process.env.CLIENT_URL}/purchase-cancelled`,
             discounts: coupon ? [{ coupon: await createStripeCoupon(coupon.discountPercentage) }] : [],
             metadata: {
-                coupon: couponCode || "",
                 userId: req.user._id.toString(),
+                couponCode: couponCode || "",
+                
                 product: JSON.stringify(
-                    product.map(product => ({
+                    products.map((product) => ({
                         id: product._id,
                         quantity: product.quantity,
                         price: product.price
@@ -54,12 +56,13 @@ export const createCheckoutSession = async (req, res) => {
                 )
             }
         })
-        if (totalAmount >= 20000) {
+        if (totalAmount >= 2000000) {
             await createNewCoupon(req.user._id)
         }
-        res.status(200).json({ id: session.id, totalAmount: totalAmount / 100 })
+        res.status(200).json({ id: session.id, totalAmount: totalAmount })
 
     } catch (error) {
+        console.error("Error processing checkout:", error);
         res.status(500).json({ message: "Lỗi ở createCheckoutSession controller: ", error: error.message })
     }
     async function createStripeCoupon(discountPercentage) {
@@ -71,12 +74,13 @@ export const createCheckoutSession = async (req, res) => {
         return coupon.id
     }
     async function createNewCoupon(userId) {
+        await Coupon.findOneAndDelete({ userId });
         const newCoupon = new Coupon({
             code: "GIFT" + Math.random().toString(36).substring(2, 8).toUpperCase(),
             discountPercentage: 10,
             expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-            isActive: true,
-            userId: userId
+            userId: userId,
+            isActive: true
         })
 
         await newCoupon.save()
@@ -85,29 +89,32 @@ export const createCheckoutSession = async (req, res) => {
     }
 }
 
-export const checkOutSuccess = async (req, res) => {
+export const checkoutSuccess = async (req, res) => {
     try {
         const { sessionId } = req.body
         const session = await stripe.checkout.sessions.retrieve(sessionId)
-
         if (session.payment_status === "paid") {
-            if (session.metadata.coupon) {
-                await Coupon.findOneAndUpdate({ code: session.metadata.coupon, userId: session.metadata.userId}, { isActive: false })
+            if (session.metadata.couponCode) {
+                await Coupon.findOneAndUpdate({ code: session.metadata.couponCode, userId: session.metadata.userId}, { isActive: false })
             }
             const product = JSON.parse(session.metadata.product)
-            const order = await Order.create({
+            const existingOrder = await Order.findOne({ stripeSessionId: sessionId });
+            if (existingOrder) {
+                return res.status(400).json({ message: "Đơn hàng đã tồn tại với stripeSessionId này." });
+            }
+            const order = await Order({
                 user: session.metadata.userId,
-                products: product.map(product => ({
+                products: product.map((product) => ({
                     product: product.id,
                     quantity: product.quantity,
                     price: product.price
                 })),
                 totalAmount: session.amount_total,
-                stripeSessionId: session.id
+                stripeSessionId: sessionId
             })
 
             await order.save()
-            res.status(200).json({ message: "Success" })
+            res.status(200).json({ message: "Success", orderId: order._id })
         }
     } catch (error) {
         res.status(500).json({ message: "Lỗi ở checkOutSuccess controller: ", error: error.message })
